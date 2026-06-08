@@ -9,7 +9,7 @@ from app.schemas.auth import (
     TokenResponse
 )
 from app.services.auth_service import register_user, authenticate_user
-from app.api.dependencies.auth import get_current_user
+from app.api.dependencies.auth import get_current_user, require_admin
 from app.db.models import User
 
 router = APIRouter()
@@ -73,3 +73,12 @@ def get_me(
     current_user: User = Depends(get_current_user)
 ):
     return current_user
+
+@router.get("/admin-only")
+def admin_only_route(
+    current_user: User = Depends(require_admin)
+):
+    return {
+        "message": "Welcome Admin",
+        "user": current_user.email
+    }
