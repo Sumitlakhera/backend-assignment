@@ -1,5 +1,11 @@
 from fastapi import FastAPI
 from app.core.config import settings
+from app.db.database import engine
+from app.db.database import Base
+
+from app.db import models
+
+Base.metadata.create_all(bind=engine)
 
 print(settings.DATABASE_URL)
 
