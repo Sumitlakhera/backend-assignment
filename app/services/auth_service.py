@@ -6,7 +6,8 @@ from app.repositories.user_repository import (
 )
 
 from app.core.security import (
-    hash_password
+    hash_password,
+    verify_password
 )
 
 
@@ -36,3 +37,24 @@ def register_user(
         email=email,
         hashed_password=hashed_password
     )
+
+def authenticate_user(
+        db: Session,
+        email: str,
+        password: str
+):
+    user = get_user_by_email(
+        db,
+        email
+    )
+
+    if not user:
+        raise ValueError("Invalid email or password")
+
+    if not verify_password(
+        password,
+        user.hashed_password
+    ):
+        raise ValueError("Invalid email or password")
+    
+    return user
