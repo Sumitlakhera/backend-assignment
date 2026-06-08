@@ -13,3 +13,6 @@ __pycache__/
 
 # Alembic
 alembic/versions/*.pyc
+
+#test file
+app/test_hash.py 
