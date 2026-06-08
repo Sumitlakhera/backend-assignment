@@ -1,6 +1,5 @@
-import re
-
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from app.db.database import get_db
 from app.schemas.auth import (
@@ -47,14 +46,14 @@ def register(
     response_model=TokenResponse
 )
 def login(
-    login_data: LoginRequest,
+    form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db)
 ):
     try:
         user = authenticate_user(
             db=db,
-            email=login_data.email,
-            password=login_data.password
+            email=form_data.username,
+            password=form_data.password
         )
 
         return user
