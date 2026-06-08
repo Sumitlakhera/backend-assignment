@@ -1,5 +1,4 @@
 import re
-from tokenize import Token
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -11,6 +10,8 @@ from app.schemas.auth import (
     TokenResponse
 )
 from app.services.auth_service import register_user, authenticate_user
+from app.api.dependencies.auth import get_current_user
+from app.db.models import User
 
 router = APIRouter()
 
@@ -63,3 +64,13 @@ def login(
             status_code=401,
             detail=str(e)
         )
+
+
+@router.get(
+    "/me",
+    response_model=UserResponse
+)
+def get_me(
+    current_user: User = Depends(get_current_user)
+):
+    return current_user
