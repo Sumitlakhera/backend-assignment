@@ -7,7 +7,8 @@ from app.repositories.user_repository import (
 
 from app.core.security import (
     hash_password,
-    verify_password
+    verify_password,
+    create_access_token
 )
 
 
@@ -57,4 +58,11 @@ def authenticate_user(
     ):
         raise ValueError("Invalid email or password")
     
-    return user
+    access_token = create_access_token(
+        data={"sub": str(user.id)}
+    )
+
+    return {
+        "access_token": access_token,
+        "token_type": "bearer"
+    }

@@ -1,4 +1,5 @@
 import re
+from tokenize import Token
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -6,7 +7,8 @@ from app.db.database import get_db
 from app.schemas.auth import (
     UserRegisterRequest,
     UserResponse,
-    LoginRequest
+    LoginRequest,
+    TokenResponse
 )
 from app.services.auth_service import register_user, authenticate_user
 
@@ -41,7 +43,7 @@ def register(
 
 @router.post(
     "/login",
-    response_model=UserResponse
+    response_model=TokenResponse
 )
 def login(
     login_data: LoginRequest,
