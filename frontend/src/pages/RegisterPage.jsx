@@ -33,19 +33,17 @@ function RegisterPage() {
 
       console.log(response.data);
 
-setSuccess(
-  "Registration successful. Redirecting to login..."
-);
+      setSuccess("Registration successful. Redirecting to login...");
 
-setFormData({
-  name: "",
-  email: "",
-  password: "",
-});
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+      });
 
-setTimeout(() => {
-  navigate("/");
-}, 1500);
+      setTimeout(() => {
+        navigate("/");
+      }, 1500);
     } catch (error) {
       console.error(error);
 
@@ -54,60 +52,63 @@ setTimeout(() => {
   };
 
   return (
-    <div>
-      <h2>Register</h2>
+    <div className="page-container">
+      <div className="card">
+        <h2>Register</h2>
 
-       {success && <p>{success}</p>}
-       {error && <p>{error}</p>}
+        {success && <p className="message success-message">{success}</p>}
+        {error && <p className="message error-message">{error}</p>}
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Name</label>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label>Name</label>
+            <br />
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+            />
+          </div>
+
           <br />
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-          />
-        </div>
 
-        <br />
+          <div className="form-group">
+            <label>Email</label>
+            <br />
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+            />
+          </div>
 
-        <div>
-          <label>Email</label>
           <br />
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-          />
-        </div>
 
-        <br />
+          <div className="form-group">
+            <label>Password</label>
+            <br />
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+            />
+          </div>
 
-        <div>
-          <label>Password</label>
           <br />
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-          />
-        </div>
+          <div style={{ marginTop: "1rem" }}>
+            <p>
+              Already have an account? <Link to="/">Login</Link>
+            </p>
+          </div>
 
-        <br />
-        <p>
-  Already have an account?{" "}
-  <Link to="/">
-    Login
-  </Link>
-</p>
-
-        <button type="submit">Register</button>
-      </form>
+          <button className="btn" type="submit">
+            Register
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

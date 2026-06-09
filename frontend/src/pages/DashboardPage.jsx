@@ -69,18 +69,12 @@ function DashboardPage() {
         setMessage("Product created successfully");
       }
 
-      setProductData({
-        name: "",
-        description: "",
-        price: "",
-      });
-
-      setEditingProductId(null);
+      resetProductForm();
 
       fetchProducts();
     } catch (error) {
- setError(getErrorMessage(error));
-}
+      setError(getErrorMessage(error));
+    }
   };
 
   const handleDeleteProduct = async (productId) => {
@@ -93,8 +87,21 @@ function DashboardPage() {
 
       fetchProducts();
     } catch (error) {
-     setError(getErrorMessage(error));
+      setError(getErrorMessage(error));
     }
+  };
+
+  const resetProductForm = () => {
+    setProductData({
+      name: "",
+      description: "",
+      price: "",
+    });
+
+    setEditingProductId(null);
+
+    setMessage("");
+    setError("");
   };
 
   const handleLogout = () => {
@@ -104,102 +111,122 @@ function DashboardPage() {
   };
 
   return (
-    <div>
+    <div className="dashboard-container">
       <h2>Dashboard</h2>
 
-      {message && <p>{message}</p>}
-      {error && <p>{error}</p>}
+      {message && <p className="message success-message">{message}</p>}
+      {error && <p className="message error-message">{error}</p>}
 
       {user && (
-        <div>
+        <div className="dashboard-section">
           <p>Name: {user.name}</p>
           <p>Email: {user.email}</p>
           <p>Role: {user.role}</p>
         </div>
       )}
 
-      <h3>{editingProductId ? "Updating Product" : "Create Product"}</h3>
+      <div className="dashboard-section">
+        <h3>{editingProductId ? "Updating Product" : "Create Product"}</h3>
 
-      <form onSubmit={handleCreateProduct}>
-        <div>
-          <label>Name</label>
+        <form className="dashboard-form" onSubmit={handleCreateProduct}>
+          <div className="form-group">
+            <label>Name</label>
+            <br />
+            <input
+              type="text"
+              name="name"
+              value={productData.name}
+              onChange={handleProductChange}
+            />
+          </div>
+
           <br />
-          <input
-            type="text"
-            name="name"
-            value={productData.name}
-            onChange={handleProductChange}
-          />
-        </div>
+
+          <div className="form-group">
+            <label>Description</label>
+            <br />
+            <input
+              type="text"
+              name="description"
+              value={productData.description}
+              onChange={handleProductChange}
+            />
+          </div>
+
+          <br />
+
+          <div className="form-group">
+            <label>Price</label>
+            <br />
+            <input
+              type="number"
+              name="price"
+              value={productData.price}
+              onChange={handleProductChange}
+            />
+          </div>
+        
+        
 
         <br />
 
-        <div>
-          <label>Description</label>
-          <br />
-          <input
-            type="text"
-            name="description"
-            value={productData.description}
-            onChange={handleProductChange}
-          />
+        <div className="action-buttons">
+          <button className="btn" type="submit">
+            {editingProductId ? "Update Product" : "Create Product"}
+          </button>
+
+          <button type="button" className="btn" onClick={resetProductForm}>
+            Reset
+          </button>
         </div>
-
-        <br />
-
-        <div>
-          <label>Price</label>
-          <br />
-          <input
-            type="number"
-            name="price"
-            value={productData.price}
-            onChange={handleProductChange}
-          />
-        </div>
-
-        <br />
-
-        <button type="submit">
-          {editingProductId ? "Update Product" : "Create Product"}
-        </button>
-      </form>
+        </form>
+      </div>
 
       <hr />
 
-      <h3>Products</h3>
+      <div className="dashboard-section">
+        <h3>Products</h3>
 
-      <ul>
-        {products.map((product) => (
-          <li key={product.id}>
-            <p>
-              Name : <strong>{product.name}</strong>
-            </p>
-            <p>Description : {product.description}</p>
-            <p>Price : ₹{product.price}</p>
+        <ul>
+          {products.map((product) => (
+            <li key={product.id} className="product-item">
+              <p>
+                Name : <strong>{product.name}</strong>
+              </p>
+              <p>Description : {product.description}</p>
+              <p>Price : ₹{product.price}</p>
 
-            <button
-              onClick={() => {
-                setEditingProductId(product.id);
+              <div className="action-buttons">
+                <button
+                  className="action-button"
+                  onClick={() => {
+                    setEditingProductId(product.id);
 
-                setProductData({
-                  name: product.name,
-                  description: product.description,
-                  price: product.price,
-                });
-              }}
-            >
-              Edit
-            </button>
-            <> </>
-            <button onClick={() => handleDeleteProduct(product.id)}>
-              Delete
-            </button>
-          </li>
-        ))}
-      </ul>
+                    setProductData({
+                      name: product.name,
+                      description: product.description,
+                      price: product.price,
+                    });
+                  }}
+                >
+                  Edit
+                </button>
+                <> </>
+                <button
+                  className="action-button"
+                  onClick={() => handleDeleteProduct(product.id)}
+                >
+                  Delete
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
 
-      <button onClick={handleLogout}>Logout</button>
+      <button className="logout-button" onClick={handleLogout}>
+        Logout
+      </button>
     </div>
   );
 }
