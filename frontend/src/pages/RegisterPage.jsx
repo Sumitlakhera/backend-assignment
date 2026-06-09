@@ -1,5 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+import { getErrorMessage } from "../utils/errorHandler";
+import { Link } from "react-router-dom";
 
 function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -10,6 +13,7 @@ function RegisterPage() {
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const navigate = useNavigate();
 
   const handleChange = (event) => {
     setFormData({
@@ -29,17 +33,23 @@ function RegisterPage() {
 
       console.log(response.data);
 
-      setSuccess("Registration successful");
+setSuccess(
+  "Registration successful. Redirecting to login..."
+);
 
-      setFormData({
-        name: "",
-        email: "",
-        password: "",
-      });
+setFormData({
+  name: "",
+  email: "",
+  password: "",
+});
+
+setTimeout(() => {
+  navigate("/");
+}, 1500);
     } catch (error) {
       console.error(error);
 
-      setError(error.response?.data?.detail || "Registration failed");
+      setError(getErrorMessage(error));
     }
   };
 
@@ -89,6 +99,12 @@ function RegisterPage() {
         </div>
 
         <br />
+        <p>
+  Already have an account?{" "}
+  <Link to="/">
+    Login
+  </Link>
+</p>
 
         <button type="submit">Register</button>
       </form>

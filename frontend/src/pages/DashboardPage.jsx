@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+import { getErrorMessage } from "../utils/errorHandler";
 
 function DashboardPage() {
   const [user, setUser] = useState(null);
+  const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
@@ -50,6 +52,9 @@ function DashboardPage() {
   const handleCreateProduct = async (event) => {
     event.preventDefault();
 
+    setMessage("");
+    setError("");
+
     try {
       const payload = {
         ...productData,
@@ -58,8 +63,10 @@ function DashboardPage() {
 
       if (editingProductId) {
         await api.put(`/products/${editingProductId}`, payload);
+        setMessage("Product updated successfully");
       } else {
         await api.post("/products", payload);
+        setMessage("Product created successfully");
       }
 
       setProductData({
@@ -72,7 +79,21 @@ function DashboardPage() {
 
       fetchProducts();
     } catch (error) {
-      console.error(error);
+ setError(getErrorMessage(error));
+}
+  };
+
+  const handleDeleteProduct = async (productId) => {
+    setMessage("");
+    setError("");
+
+    try {
+      await api.delete(`/products/${productId}`);
+      setMessage("Product deleted successfully");
+
+      fetchProducts();
+    } catch (error) {
+     setError(getErrorMessage(error));
     }
   };
 
@@ -86,6 +107,7 @@ function DashboardPage() {
     <div>
       <h2>Dashboard</h2>
 
+      {message && <p>{message}</p>}
       {error && <p>{error}</p>}
 
       {user && (
@@ -168,6 +190,10 @@ function DashboardPage() {
               }}
             >
               Edit
+            </button>
+            <> </>
+            <button onClick={() => handleDeleteProduct(product.id)}>
+              Delete
             </button>
           </li>
         ))}

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+import { getErrorMessage } from "../utils/errorHandler";
+import { Link } from "react-router-dom";
 
 function LoginPage() {
   const [formData, setFormData] = useState({
@@ -57,10 +59,7 @@ const handleSubmit = async (event) => {
   } catch (error) {
     console.error(error);
 
-    setError(
-      error.response?.data?.detail ||
-      "Login failed"
-    );
+setError(getErrorMessage(error));
   }
 };
 
@@ -95,6 +94,13 @@ const handleSubmit = async (event) => {
         </div>
 
         <br />
+
+        <p>
+  Don't have an account?{" "}
+  <Link to="/register">
+    Register
+  </Link>
+</p>
 
         <button type="submit">
           Login
