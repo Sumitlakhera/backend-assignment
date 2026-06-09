@@ -5,7 +5,6 @@ from app.db.database import get_db
 from app.schemas.auth import (
     UserRegisterRequest,
     UserResponse,
-    LoginRequest,
     TokenResponse
 )
 from app.services.auth_service import register_user, authenticate_user
@@ -73,6 +72,7 @@ def get_me(
     current_user: User = Depends(get_current_user)
 ):
     return current_user
+
 
 @router.get("/admin-only")
 def admin_only_route(
