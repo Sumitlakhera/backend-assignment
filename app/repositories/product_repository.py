@@ -1,6 +1,3 @@
-from itertools import product
-import re
-
 from sqlalchemy.orm import Session
 from app.db.models import Product
 

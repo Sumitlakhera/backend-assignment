@@ -1,15 +1,7 @@
 from fastapi import FastAPI
-from app.core.config import settings
-from app.db.database import engine
-from app.db.database import Base
-
-from app.db import models
 from app.api.v1.auth import router as auth_router
 from app.api.v1.products import router as products_router
 
-Base.metadata.create_all(bind=engine)
-
-print(settings.DATABASE_URL)
 
 app = FastAPI(
     title="Backend Intern Assignment API",
