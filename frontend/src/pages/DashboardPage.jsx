@@ -7,6 +7,11 @@ function DashboardPage() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
+  const [productData, setProductData] = useState({
+    name: "",
+    description: "",
+    price: "",
+  });
 
   useEffect(() => {
     fetchCurrentUser();
@@ -34,6 +39,34 @@ function DashboardPage() {
     }
   };
 
+  const handleProductChange = (event) => {
+    setProductData({
+      ...productData,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const handleCreateProduct = async (event) => {
+    event.preventDefault();
+
+    try {
+      await api.post("/products", {
+        ...productData,
+        price: Number(productData.price),
+      });
+
+      setProductData({
+        name: "",
+        description: "",
+        price: "",
+      });
+
+      fetchProducts();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("token");
 
@@ -54,16 +87,63 @@ function DashboardPage() {
         </div>
       )}
 
+      <h3>Create Product</h3>
+
+      <form onSubmit={handleCreateProduct}>
+        <div>
+          <label>Name</label>
+          <br />
+          <input
+            type="text"
+            name="name"
+            value={productData.name}
+            onChange={handleProductChange}
+          />
+        </div>
+
+        <br />
+
+        <div>
+          <label>Description</label>
+          <br />
+          <input
+            type="text"
+            name="description"
+            value={productData.description}
+            onChange={handleProductChange}
+          />
+        </div>
+
+        <br />
+
+        <div>
+          <label>Price</label>
+          <br />
+          <input
+            type="number"
+            name="price"
+            value={productData.price}
+            onChange={handleProductChange}
+          />
+        </div>
+
+        <br />
+
+        <button type="submit">Create Product</button>
+      </form>
+
+      <hr />
+
       <h3>Products</h3>
 
       <ul>
         {products.map((product) => (
           <li key={product.id}>
             <p>
-              <strong>{product.name}</strong>
+              Name : <strong>{product.name}</strong>
             </p>
-            <p>{product.description}</p>
-            <p>₹{product.price}</p>
+            <p>Description : {product.description}</p>
+            <p>Price : ₹{product.price}</p>
           </li>
         ))}
       </ul>
