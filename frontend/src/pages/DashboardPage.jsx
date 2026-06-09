@@ -12,6 +12,7 @@ function DashboardPage() {
     description: "",
     price: "",
   });
+  const [editingProductId, setEditingProductId] = useState(null);
 
   useEffect(() => {
     fetchCurrentUser();
@@ -50,16 +51,24 @@ function DashboardPage() {
     event.preventDefault();
 
     try {
-      await api.post("/products", {
+      const payload = {
         ...productData,
         price: Number(productData.price),
-      });
+      };
+
+      if (editingProductId) {
+        await api.put(`/products/${editingProductId}`, payload);
+      } else {
+        await api.post("/products", payload);
+      }
 
       setProductData({
         name: "",
         description: "",
         price: "",
       });
+
+      setEditingProductId(null);
 
       fetchProducts();
     } catch (error) {
@@ -87,7 +96,7 @@ function DashboardPage() {
         </div>
       )}
 
-      <h3>Create Product</h3>
+      <h3>{editingProductId ? "Updating Product" : "Create Product"}</h3>
 
       <form onSubmit={handleCreateProduct}>
         <div>
@@ -129,7 +138,9 @@ function DashboardPage() {
 
         <br />
 
-        <button type="submit">Create Product</button>
+        <button type="submit">
+          {editingProductId ? "Update Product" : "Create Product"}
+        </button>
       </form>
 
       <hr />
@@ -144,6 +155,20 @@ function DashboardPage() {
             </p>
             <p>Description : {product.description}</p>
             <p>Price : ₹{product.price}</p>
+
+            <button
+              onClick={() => {
+                setEditingProductId(product.id);
+
+                setProductData({
+                  name: product.name,
+                  description: product.description,
+                  price: product.price,
+                });
+              }}
+            >
+              Edit
+            </button>
           </li>
         ))}
       </ul>
